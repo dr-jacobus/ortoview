@@ -1,0 +1,102 @@
+<div class="grey lighten-3" :id="$style.root">
+  <v-responsive class="black darken-3">
+    <v-container grid-list-lg fill-height :id="$style.banner">
+      <v-layout row align-center>
+        <v-flex
+          :xs6="!$vuetify.breakpoint.smAndDown"
+          :xs12="$vuetify.breakpoint.smAndDown"
+        >
+          <v-card flat dark color="transparent">
+            <v-card-title class="display-1 text-center pv-break-word">
+              ORTOMESH | Viewer
+            </v-card-title>
+            <v-card-text>
+               É uma aplicação web avançada de visualização e análise de dados científicos, mantida pela 
+              <a
+                target="_blank"
+                class="indigo--text text--lighten-3"
+                href="https://dr-jacobus.github.io/ortomesh/"
+                rel="noopener noreferrer"
+              >Ortomesh, Inc.</a> 
+              Suporta múltiplos formatos de arquivo, como DICOM, NRRD, STL e OBJ, permitindo a manipulação interativa de volumes, 
+              superfícies, nuvens de pontos e estruturas anatômicas complexas. Desenvolvida para aplicações em saúde e pesquisa, 
+              oferece recursos para inspeção detalhada de imagens médicas, planejamento cirúrgico, educação médica e comunicação clínica, 
+              promovendo a integração de dados visuais.
+            </v-card-text>
+          </v-card>
+        </v-flex>
+        <v-flex
+          v-if="!$vuetify.breakpoint.smAndDown"
+          key="if-large-enough-screen"
+          xs6
+          fill-height
+        >
+          <drag-and-drop
+            enabled
+            :class="$style.dnd"
+            @drop="$emit('open-files', $event)"
+          >
+            <template v-slot:default="{ dragHover }">
+              <div
+                :class="{ [$style.fileUpload]: true, [$style.fileUploadHover]: dragHover }"
+                @click.stop="$emit('open')"
+              >
+                <div class="white--text body-2" :class="$style.fileUploadContents">
+                  <v-btn
+                    color="primary"
+                    raised="false"
+                    @click.stop="$emit('open')"
+                  >
+                    <span v-if="dragHover" class="text-uppercase mr-2">solte seu arquivo</span>
+                    <span v-else class="text-uppercase mr-2">abra seu arquivo</span>
+                    <v-icon>mdi-folder-outline</v-icon>
+                  </v-btn>
+                  <div class="pv-no-select mt-2">
+                    ou coloque um em qualquer lugar desta caixa para começar.
+                  </div>
+                </div>
+              </div>
+            </template>
+          </drag-and-drop>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-responsive>
+  <v-container class="mt-4 pv-no-select" :class="$style.sampleBackground" grid-list-lg>
+    <v-layout row wrap>
+      <v-flex xs12>
+        <span class="title" style="color: rgb(192, 185, 185);">Dados de amostra</span>
+      </v-flex>
+      <v-flex
+        v-for="(sample, i) in samples"
+        :key="i"
+        :xs4="$vuetify.breakpoint.mdAndUp"
+        :xs6="$vuetify.breakpoint.sm"
+        :xs12="$vuetify.breakpoint.xs"
+      >
+        <v-card :class="[$style.sampleData, $style.blackCard]" flat tile>
+          <v-img :src="sample.image" height="300px" />
+          <div
+            :class="$style.linkOverlay"
+            @click.stop="openSample(sample)"
+          >
+            <div :class="$style.linkOverlayText" class="body-2">
+              {{ sample.label }} ({{ sample.size }})
+              <div :class="$style.description" v-if="sample.description">
+                {{ sample.description }}
+              </div>
+              <div :class="$style.acknowledgement" v-if="sample.acknowledgement">
+                {{ sample.acknowledgement }}
+              </div>
+            </div>
+          </div>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
+  <v-footer class="d-flex flex-column" height="48px" color="transparent">
+    <div class="mb-2 text-center grey--text text--darken-2">
+      <div>&copy; {{ new Date().getFullYear() }} — Ortomesh, Healthtech.</div>
+    </div>
+  </v-footer>
+</div>
